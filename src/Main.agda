@@ -47,7 +47,6 @@ module Entrypoint where
         show-d : Maybe ℕ → String
         show-d (just x) = "day " String.++ (show x)
         show-d nothing = "all days"
-      
 
   record Args : Set where
     field
