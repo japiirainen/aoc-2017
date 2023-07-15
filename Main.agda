@@ -4,6 +4,7 @@ import Aoc
 import IO
 import IO.Base
 import IO.Finite
+import System.Environment
 
 open import Level
 open import Function using (_$_)
@@ -27,7 +28,7 @@ module Entrypoint (solutions : Solutions) where
   open IO.Base using (_>>=_; _>>_; _<$>_; lift; IO)
   open IO.Finite using (putStrLn; readFile)
   open IO.List using (mapM′)
-  open Aoc.CLI
+  open System.Environment using (getArgs)
 
   data Part : Set where
     one  : Part
