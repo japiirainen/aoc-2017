@@ -5,11 +5,14 @@ module Aoc where
 import Data.Nat.Show as ℕ
 import Data.Integer.Show as ℤ
 
-open import Data.List.Base using (List)
-open import Data.String as String using (String)
+open import Function
+open import Data.List.Base
+open import Data.String.Properties using (_≟_)
+open import Data.String as String using (String; words)
 open import Data.Nat.Base using (ℕ)
 open import Data.Integer.Base using (ℤ)
 open import Data.Maybe using (Maybe; just; nothing)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 record Show (a : Set) : Set where
   constructor show:=
@@ -42,3 +45,13 @@ record Solution : Set where
     part₁ : PartSolution
     part₂ : PartSolution
 
+strip : String → String
+strip = String.intersperse " " ∘
+        reverse ∘
+        dropWhile (_≟ "") ∘
+        reverse ∘
+        dropWhile (_≟ "") ∘
+        words
+
+_ : strip "  1 2 3   " ≡ "1 2 3"
+_ = refl
