@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical-compatible --guardedness #-}
+{-# OPTIONS --cubical-compatible --guardedness --safe #-}
 
 module Day01 where
 
