@@ -11,7 +11,6 @@ open import Data.String as String using (String)
 open import Data.Nat.Base using (ℕ)
 open import Data.Integer.Base using (ℤ)
 open import Data.Maybe using (Maybe; just; nothing)
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
 
 postulate
   getArgs_ : PrimIO (List String)
@@ -50,8 +49,11 @@ instance
     nothing → "nothing"
     (just x) → show x
 
+Input : Set
+Input = String
+
 record Solution : Set where
   field
-    part₁ : ⊤ → String
-    part₂ : ⊤ → String
+    part₁ : Input → String
+    part₂ : Input → String
 

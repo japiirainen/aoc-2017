@@ -20,7 +20,7 @@ open import Agda.Builtin.Nat as Nat
 
 module Entrypoint where
   open IO.Base using (Main; _>>=_; _>>_; _<$>_; lift; IO)
-  open IO.Finite using (putStrLn)
+  open IO.Finite using (putStrLn; readFile)
   open IO.List using (mapM′)
   open Utils
   open Utils.CLI
@@ -62,15 +62,15 @@ module Entrypoint where
     Show-Args = show:= λ p →
       show (Args.day p) String.++ " - " String.++ show (Args.part p)
 
-  parseArgs : List String → Args
-  parseArgs ("--day" ∷ day ∷ rest) = record (parseArgs rest) { day = day:= (readMaybe 10 day) }
-  parseArgs ("--part" ∷ part ∷ rest) = record (parseArgs rest) { part = parsePart part }
+  parse-args : List String → Args
+  parse-args ("--day" ∷ day ∷ rest) = record (parse-args rest) { day = day:= (readMaybe 10 day) }
+  parse-args ("--part" ∷ part ∷ rest) = record (parse-args rest) { part = parse-part part }
     where
-      parsePart : String → Part
-      parsePart "1" = one
-      parsePart "2" = two
-      parsePart _ = both
-  parseArgs _ = record { day = day:= nothing; part = both }
+      parse-part : String → Part
+      parse-part "1" = one
+      parse-part "2" = two
+      parse-part _ = both
+  parse-args _ = record { day = day:= nothing; part = both }
 
   Solutions : Set
   Solutions = List (ℕ × Solution)
@@ -78,40 +78,48 @@ module Entrypoint where
   solutions : Solutions
   solutions = map (λ (i , s) → 1 + i , s) $ zip (upTo 1) []
 
-  runDay : {ℓ : Level} → Part → Solution → IO {ℓ} ⊤
-  runDay one s = putStrLn $ "Part 1 : " String.++ (Solution.part₁ s tt)
-  runDay two s = putStrLn $ "Part 2 : " String.++ (Solution.part₂ s tt)
-  runDay both s = runDay one s >> runDay two s
+  run-day : Part → Input → Solution → IO {0ℓ} ⊤
+  run-day one input s = putStrLn $ "Part 1 : " String.++ (Solution.part₁ s input)
+  run-day two input s = putStrLn $ "Part 2 : " String.++ (Solution.part₂ s input)
+  run-day both input s = run-day one input s >> run-day two input s
 
-  findSolution : ℕ → Maybe Solution
-  findSolution = go solutions
+  find-solution : ℕ → Maybe Solution
+  find-solution = go solutions
     where
       go : Solutions → ℕ → Maybe Solution
       go [] _ = nothing
       go ((i , s) ∷ ss) n = if i Nat.== n then just s else go ss n
 
-  findAndRun : {ℓ : Level} → ℕ → Part → IO {ℓ} ⊤
-  findAndRun day part with (findSolution day)
-  ... | just sol = runDay part sol
+  find-and-run : ℕ → Part → Input → IO {0ℓ} ⊤
+  find-and-run day part input with (find-solution day)
+  ... | just sol = run-day part input sol
   ... | nothing  = putStrLn $ "Day " String.++ (show day) String.++ " not implemented (yet)."
 
-  run : {ℓ : Level} → Args → IO {ℓ} ⊤
+  path-for-day : ℕ → String
+  path-for-day day = "./inputs/" String.++ (show day) String.++ ".txt"
+
+  run : Args → IO {0ℓ} ⊤
   run args with (Args.day args)
   ... | day:= (just day) = do
     putStrLn $ "Running day : " String.++ (show day)
-    findAndRun day (Args.part args)
+    input ← readFile $ path-for-day day
+    find-and-run day (Args.part args) input
   ... | day:= nothing = do
-    putStrLn $ "Running all " String.++ (show $ length solutions) String.++ " days"
-    mapM′ (λ (i , d) →
-             (putStrLn $ "---------- Day" String.++ (show i) String.++ " -------------")
-             >> runDay (Args.part args) d) solutions
+      putStrLn $ "Running all " String.++ (show $ length solutions) String.++ " days"
+      mapM′ go solutions
+    where
+      go : (ℕ × Solution) → IO {0ℓ} ⊤
+      go (day , sol) = do
+        putStrLn $ "---------- Day" String.++ (show day) String.++ " -------------"
+        input ← readFile $ path-for-day day
+        run-day (Args.part args) input sol
 
   -- entrypoint for aoc
   -- There are two main modes:
   -- 1. no arguments - run all days
   -- 2. args in format: --day 01 --part <1 OR 2>
   entrypoint : IO ⊤
-  entrypoint = parseArgs <$> getArgs >>= run
+  entrypoint = parse-args <$> getArgs >>= run
 
   main : Main
   main = IO.Base.run entrypoint
