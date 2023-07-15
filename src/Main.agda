@@ -11,15 +11,20 @@ open import Data.Unit.Polymorphic.Base using (⊤; tt)
 open import Data.String.Base as String using (String)
 open import Data.String.Properties using (_==_)
 open import Data.Maybe using (Maybe; just; nothing; is-just)
-open import Data.List.Base using (List; []; _∷_; map; upTo; zip; length)
+open import Data.List.Base using (List; []; _∷_; length)
 open import Data.Nat.Base using (ℕ)
 open import Data.Nat.Show using (readMaybe)
 open import Data.Product.Base using (_×_; _,_; proj₂)
 open import Data.Bool using (if_then_else_)
 open import Agda.Builtin.Nat as Nat
 
-module Entrypoint where
-  open IO.Base using (Main; _>>=_; _>>_; _<$>_; lift; IO)
+open Utils
+
+Solutions : Set
+Solutions = List (ℕ × Solution)
+
+module Entrypoint (solutions : Solutions) where
+  open IO.Base using (_>>=_; _>>_; _<$>_; lift; IO)
   open IO.Finite using (putStrLn; readFile)
   open IO.List using (mapM′)
   open Utils
@@ -72,12 +77,6 @@ module Entrypoint where
       parse-part _ = both
   parse-args _ = record { day = day:= nothing; part = both }
 
-  Solutions : Set
-  Solutions = List (ℕ × Solution)
-
-  solutions : Solutions
-  solutions = map (λ (i , s) → 1 + i , s) $ zip (upTo 1) []
-
   run-day : Part → Input → Solution → IO {0ℓ} ⊤
   run-day one input s = putStrLn $ "Part 1 : " String.++ (Solution.part₁ s input)
   run-day two input s = putStrLn $ "Part 2 : " String.++ (Solution.part₂ s input)
@@ -121,5 +120,3 @@ module Entrypoint where
   entrypoint : IO ⊤
   entrypoint = parse-args <$> getArgs >>= run
 
-  main : Main
-  main = IO.Base.run entrypoint

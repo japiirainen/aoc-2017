@@ -1,4 +1,4 @@
 name: aoc-2017
-include: src
+include: . src
 depend: standard-library
 flags: --guardedness

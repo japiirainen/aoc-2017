@@ -48,7 +48,7 @@
         name = "aoc";
         src = self;
         buildPhase = ''
-          ${agda}/bin/agda -c src/Main.agda --ghc-flag="-o" --ghc-flag="aoc" --compile-dir=_build 
+          ${agda}/bin/agda -c Everything.agda --ghc-flag="-o" --ghc-flag="aoc" --compile-dir=_build 
         '';
         installPhase = ''
           mkdir -p $out/bin;
