@@ -1,4 +1,4 @@
-module Utils where
+module Aoc where
 
 import IO
 import IO.Base
@@ -52,8 +52,12 @@ instance
 Input : Set
 Input = String
 
+PartSolution : Set
+PartSolution = Input → String
+
 record Solution : Set where
+  constructor _-_
   field
-    part₁ : Input → String
-    part₂ : Input → String
+    part₁ : PartSolution
+    part₂ : PartSolution
 

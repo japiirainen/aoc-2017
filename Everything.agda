@@ -1,24 +1,32 @@
 module Everything where
 
+import Aoc
 import Main
-import Utils
 import IO.Base
 
-open import Function using (_$_)
-open import Data.List.Base using (map; zip; upTo)
-open import Data.Product.Base using (_×_; _,_)
-open import Data.Nat.Base using (_+_)
+import Day01
+
+open import Function using (_$_; _∘_)
+open import Data.List.Base using (List; map; zip; upTo)
+open import Data.Product.Base using (_×_; _,_; map₁)
+open import Data.Nat.Base using (_+_; suc)
 open import Data.List.Base using ([]; _∷_)
 
-solutions : Main.Solutions
-solutions = map (λ (i , s) → 1 + i , s) $ zip (upTo 1) 
-  []
+open Main
 
+ss : List Aoc.Solution
+ss = Day01.sol ∷
+     []
+
+⇒Solutions : (List Aoc.Solution) → Solutions
+⇒Solutions = map (map₁ suc) ∘ zip (upTo 1)
 
 module _ where
-  open IO.Base using (Main)
 
-  module Entry = Main.Entrypoint solutions
+  module Entry = Entrypoint (⇒Solutions ss)
+
+  open IO.Base
 
   main : Main
-  main = IO.Base.run Entry.entrypoint
+  main = run Entry.entrypoint
+

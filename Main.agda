@@ -1,6 +1,6 @@
 module Main where
 
-import Utils
+import Aoc
 import IO
 import IO.Base
 import IO.Finite
@@ -18,7 +18,7 @@ open import Data.Product.Base using (_×_; _,_; proj₂)
 open import Data.Bool using (if_then_else_)
 open import Agda.Builtin.Nat as Nat
 
-open Utils
+open Aoc
 
 Solutions : Set
 Solutions = List (ℕ × Solution)
@@ -27,8 +27,7 @@ module Entrypoint (solutions : Solutions) where
   open IO.Base using (_>>=_; _>>_; _<$>_; lift; IO)
   open IO.Finite using (putStrLn; readFile)
   open IO.List using (mapM′)
-  open Utils
-  open Utils.CLI
+  open Aoc.CLI
 
   data Part : Set where
     one  : Part
@@ -78,8 +77,8 @@ module Entrypoint (solutions : Solutions) where
   parse-args _ = record { day = day:= nothing; part = both }
 
   run-day : Part → Input → Solution → IO {0ℓ} ⊤
-  run-day one input s = putStrLn $ "Part 1 : " String.++ (Solution.part₁ s input)
-  run-day two input s = putStrLn $ "Part 2 : " String.++ (Solution.part₂ s input)
+  run-day one input (part₁ - _) = putStrLn $ "Part 1 : " String.++ (part₁ input)
+  run-day two input (_ - part₂) = putStrLn $ "Part 2 : " String.++ (part₂ input)
   run-day both input s = run-day one input s >> run-day two input s
 
   find-solution : ℕ → Maybe Solution
