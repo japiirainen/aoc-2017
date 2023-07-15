@@ -1,3 +1,5 @@
+{-# OPTIONS --cubical-compatible --guardedness #-}
+
 module Aoc where
 
 import Data.Nat.Show as ℕ

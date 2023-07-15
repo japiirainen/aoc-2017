@@ -1,3 +1,5 @@
+{-# OPTIONS --cubical-compatible --guardedness #-}
+
 module Day01 where
 
 open import Function using (id)

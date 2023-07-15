@@ -1,3 +1,5 @@
+{-# OPTIONS --cubical-compatible --guardedness #-}
+
 module Everything where
 
 import Aoc
