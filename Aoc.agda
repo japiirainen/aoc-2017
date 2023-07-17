@@ -51,3 +51,6 @@ strip = String.fromList ∘ reverse ∘ dropWhileᵇ isSpace ∘ reverse ∘ dro
 
 _ : strip "  1 2 3   " ≡ "1 2 3"
 _ = refl
+
+big : ℕ
+big = 100_000_000_000

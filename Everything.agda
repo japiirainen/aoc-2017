@@ -7,6 +7,7 @@ import Main
 import IO.Base
 
 import Day01
+import Day02
 
 open import Function using (_$_; _∘_)
 open import Data.List.Base using (List; map; zip; upTo)
@@ -18,6 +19,7 @@ open Main
 
 ss : List Aoc.Solution
 ss = Day01.sol ∷
+     Day02.sol ∷
      []
 
 ⇒Solutions : (List Aoc.Solution) → Solutions

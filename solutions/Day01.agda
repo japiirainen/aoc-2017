@@ -2,7 +2,7 @@
 
 module Day01 where
 
-open import Aoc using (Solution; PartSolution; _-_)
+open import Aoc
 
 open import Level
 open import Function using (id; _∘_; _$_; const)
@@ -45,7 +45,6 @@ _ = refl
 sol : Solution
 sol = p₁ - p₂
   where
-    open Aoc
-    p₁ p₂ : PartSolution
-    p₁ = show ∘ Maybe.map (solve 1) ∘ read-input ∘ strip
-    p₂ = show ∘ Maybe.map (λ xs → solve (length xs / 2) xs) ∘ read-input ∘ strip
+  p₁ p₂ : PartSolution
+  p₁ = show ∘ Maybe.map (solve 1) ∘ read-input ∘ strip
+  p₂ = show ∘ Maybe.map (λ xs → solve (length xs / 2) xs) ∘ read-input ∘ strip
