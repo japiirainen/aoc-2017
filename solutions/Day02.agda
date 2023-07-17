@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical-compatible --guardedness --safe #-}
+{-# OPTIONS --guardedness --safe #-}
 
 module Day02 where
 
@@ -7,14 +7,15 @@ open import Aoc
 open import Function
 open import Level hiding (suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Relation.Nullary using (does)
+open import Relation.Nullary using (yes; no)
 open import Effect.Monad using (RawMonad)
-open import Effect.Applicative using (RawApplicativeZero)
-open import Data.Bool.Base using (_∧_; not)
-open import Data.List.Base using (List; _∷_; []; [_]; map; sum; head)
+open import Data.Bool.Base using (not)
+open import Data.List.Base using (List; _∷_; []; [_]; map; sum; head; filter)
 open import Data.List.Extrema.Nat using (min; max)
 open import Data.List.Effectful as List
-open import Data.Nat.Base using (ℕ; ∣_-_∣′; _/_; _+_; nonZero; suc; zero; _≡ᵇ_)
+open import Data.Nat.Properties using (_≟_)
+open import Relation.Nullary using (¬?)
+open import Data.Nat.Base using (ℕ; ∣_-_∣′; _/_; _+_; suc; zero; _≡ᵇ_)
 open import Data.Nat.Show using (readMaybe)
 open import Data.Nat.Divisibility using (_∣?_)
 open import Data.String as String using (String; lines; wordsByᵇ)
@@ -38,18 +39,18 @@ checksum₂ = Maybe.map sum ∘ mapA ds
   where
   ds : List ℕ → Maybe ℕ
   ds xs = head do
-            a ← xs
-            b ← xs
-            guard $ does (a ∣? b) ∧ not (a ≡ᵇ b)
-            [ b div a ]
+    a ← xs
+    b ← filter (¬? ∘ (a ≟_)) xs
+    [ b /? a ]
 
-            where 
-            open RawMonad List.monad
-            open RawApplicativeZero List.applicativeZero
+    where 
+    open RawMonad List.monad
 
-            _div_ : ℕ → ℕ → ℕ
-            a div zero = 1
-            a div (suc b) = _/_ a (suc b) {{nonZero}}
+    [_/?_] : ℕ → ℕ → List ℕ
+    [ _ /? zero ] = []
+    [ a /? (suc b) ] with (suc b) ∣? a
+    ... | yes _ = [ _/_ a (suc b) ]
+    ... | no _ = []
 
 sol : Solution
 sol = p₁ - p₂

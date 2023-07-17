@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical-compatible --guardedness #-}
+{-# OPTIONS --guardedness #-}
 
 module Everything where
 
