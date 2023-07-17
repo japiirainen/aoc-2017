@@ -49,14 +49,12 @@ checksum₂ = Maybe.map sum ∘ mapA ds
     [_/?_] : ℕ → ℕ → List ℕ
     [ _ /? zero ] = []
     [ a /? (suc b) ] with (suc b) ∣? a
-    ... | yes _ = [ _/_ a (suc b) ]
+    ... | yes _ = [ a / (suc b) ]
     ... | no _ = []
 
 sol : Solution
-sol = p₁ - p₂
-  where
-  p₁ = fromMaybe "No solution." ∘ Maybe.map (show ∘ checksum₁) ∘ read-input
-  p₂ = fromMaybe "No solution." ∘ Maybe.map show ∘ (Maybe._>>= checksum₂) ∘ read-input
+sol = (fromMaybe "No solution." ∘ Maybe.map (show ∘ checksum₁) ∘ read-input) 
+    - (fromMaybe "No solution." ∘ Maybe.map show ∘ (Maybe._>>= checksum₂) ∘ read-input)
 
 -- test on examples
 
