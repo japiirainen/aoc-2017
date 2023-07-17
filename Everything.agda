@@ -10,7 +10,7 @@ import Day01
 import Day02
 
 open import Function using (_$_; _∘_)
-open import Data.List.Base using (List; map; zip; upTo)
+open import Data.List.Base using (List; map; zip; upTo; length)
 open import Data.Product.Base using (_×_; _,_; map₁)
 open import Data.Nat.Base using (_+_; suc)
 open import Data.List.Base using ([]; _∷_)
@@ -23,7 +23,7 @@ ss = Day01.sol ∷
      []
 
 ⇒Solutions : (List Aoc.Solution) → Solutions
-⇒Solutions = map (map₁ suc) ∘ zip (upTo 1)
+⇒Solutions = map (map₁ suc) ∘ zip (upTo $ length ss)
 
 module _ where
 
