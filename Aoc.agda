@@ -10,6 +10,7 @@ open import Data.List.Base
 open import Data.String.Properties using (_≟_)
 open import Data.String as String using (String; words)
 open import Data.Nat.Base using (ℕ)
+open import Data.Char.Base using (isSpace)
 open import Data.Integer.Base using (ℤ)
 open import Data.Maybe using (Maybe; just; nothing)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
@@ -46,12 +47,7 @@ record Solution : Set where
     part₂ : PartSolution
 
 strip : String → String
-strip = String.intersperse " " ∘
-        reverse ∘
-        dropWhile (_≟ "") ∘
-        reverse ∘
-        dropWhile (_≟ "") ∘
-        words
+strip = String.fromList ∘ reverse ∘ dropWhileᵇ isSpace ∘ reverse ∘ dropWhileᵇ isSpace ∘ String.toList
 
 _ : strip "  1 2 3   " ≡ "1 2 3"
 _ = refl

@@ -31,7 +31,10 @@ sample : Maybe Digits
 sample = read-input "1122"
 
 solve : ℕ → Digits → ℕ
-solve n xs = sum $ map proj₁ $ filter (uncurry _≟_) $ zip xs (drop n xs ++ xs)
+solve n = sum ∘ map proj₁ ∘ filter (uncurry _≟_) ∘ pairs
+  where 
+  pairs : Digits → List (ℕ × ℕ)
+  pairs xs = zip xs (drop n xs ++ xs)
 
 _ : solve 1 (9 ∷ 1 ∷ 1 ∷ 2 ∷ 2 ∷ 9 ∷ []) ≡ 12
 _ = refl
