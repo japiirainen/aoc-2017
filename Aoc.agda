@@ -108,7 +108,7 @@ open Coord public
 
 module ListUtils where
 
-  _!!_ : {A : Set} → List A → ℕ → Maybe A
-  _!!_ = (head ∘ proj₂) ∘₂ flip splitAt
+  _‼_ : {A : Set} → List A → ℕ → Maybe A
+  _‼_ = (head ∘ proj₂) ∘₂ flip splitAt
 
 open ListUtils public

@@ -44,15 +44,12 @@ spiral = accum movements
     replicate n d
 
   accum : List Movement → Coord → List Coord
-  accum xs c = scanl f c xs
-    where
-    f : Coord → Movement → Coord
-    f = _|>_
+  accum xs c = scanl _|>_ c xs
 
 module P₁ where
 
   dest : ℕ → Maybe Coord
-  dest i = ((take i $ spiral origin) !! (i ∸ 1))
+  dest i = (take i $ spiral origin) ‼ (i ∸ 1)
 
   p₁ : ℕ → Maybe ℕ
   p₁ i = Maybe.map (manhattan origin) (dest i)
@@ -62,7 +59,7 @@ module P₂ where
   STO : StrictTotalOrder _ _ _
   STO = ×-strictTotalOrder Intₚ.<-strictTotalOrder Intₚ.<-strictTotalOrder
 
-  open module Map = MkMap STO public
+  open module Map = MkMap STO
 
   Sums = Map.Map ℕ
 
@@ -81,7 +78,7 @@ module P₂ where
       where
 
       prev : List Acc → Acc
-      prev xs = fromMaybe (Map.empty , 0) (xs !! (length xs ∸ 1))
+      prev xs = fromMaybe (Map.empty , 0) (xs ‼ (length xs ∸ 1))
 
       go : List Acc → List Coord → List Acc
       go as [] = as
@@ -92,10 +89,8 @@ module P₂ where
     step : Acc → Coord → Acc
     step (m , _) c = (Map.insert c here m , here)
       where
-      ns : List Coord
-      ns = V.toList (V.map (_$ c) neigh₈)
       here : ℕ
-      here = sum (mapMaybe (Map.lookup m) ns)
+      here = sum (mapMaybe (Map.lookup m) (V.toList (V.map (_$ c) neigh₈)))
 
   p₂ : ℕ → Maybe ℕ
   p₂ i = head $ dropWhileᵇ (ℕ._≤ᵇ i) sums
@@ -106,8 +101,8 @@ module _ where
   open P₂
 
   sol : Solution
-  sol = (fromMaybe "No solution." ∘ Maybe.map (show ∘ p₁) ∘ read-input) - 
-        (fromMaybe "No solution." ∘ Maybe.map (show ∘ p₂)∘ read-input)
+  sol = let sol = λ f → fromMaybe "No solution." ∘ Maybe.map (show ∘ f) ∘ read-input
+        in sol p₁ - sol p₂
 
   -- test on examples
 
