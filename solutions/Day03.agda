@@ -66,7 +66,6 @@ module P₂ where
   sums : List ℕ
   sums = 1 ∷ List.map proj₂ (accum step (Map.singleton origin 1 , 1) (drop 1 (spiral origin)))
     where
-
     Acc : Set
     Acc = Sums × ℕ
 
@@ -76,7 +75,6 @@ module P₂ where
     accum : (Acc → Coord → Acc) → Acc → List Coord → List Acc
     accum f init xs = go [ init ] xs
       where
-
       prev : List Acc → Acc
       prev xs = fromMaybe (Map.empty , 0) (xs ‼ (length xs ∸ 1))
 
@@ -95,19 +93,17 @@ module P₂ where
   p₂ : ℕ → Maybe ℕ
   p₂ i = head $ dropWhileᵇ (ℕ._≤ᵇ i) sums
 
-module _ where
+open P₁
+open P₂
 
-  open P₁
-  open P₂
+sol : Solution
+sol = let sol = λ f → fromMaybe "No solution." ∘ Maybe.map (show ∘ f) ∘ read-input in
+  sol p₁ - sol p₂
 
-  sol : Solution
-  sol = let sol = λ f → fromMaybe "No solution." ∘ Maybe.map (show ∘ f) ∘ read-input
-        in sol p₁ - sol p₂
+-- test on examples
 
-  -- test on examples
+_ : (Solution.part₁ sol "1024") ≡ "31"
+_ = refl
 
-  _ : (Solution.part₁ sol "1024") ≡ "31"
-  _ = refl
-
-  _ : (Solution.part₂ sol "800") ≡ "806"
-  _ = refl
+_ : (Solution.part₂ sol "800") ≡ "806"
+_ = refl
