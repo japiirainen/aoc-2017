@@ -5,7 +5,7 @@ module Day01 where
 open import Aoc
 
 open import Level
-open import Function using (id; _∘_; _$_; const)
+open import Function
 open import Data.List.Base hiding (fromMaybe)
 open import Data.List.Effectful as List
 open import Data.Nat.Base using (ℕ; _/_)
@@ -37,11 +37,8 @@ sol = p₁ - p₂
   p₁ = fromMaybe "No solution" ∘ Maybe.map (show ∘ solve 1) ∘ read-input ∘ strip
   p₂ = fromMaybe "No solution" ∘ Maybe.map (show ∘ (λ xs → solve (length xs / 2) xs)) ∘ read-input ∘ strip
 
--- test on examples
-
--- _ : solve 1 (9 ∷ 1 ∷ 1 ∷ 2 ∷ 2 ∷ 9 ∷ []) ≡ 12
-_ : (Solution.part₁ sol "91212129") ≡ "9"
+_ : Solution.part₁ sol "91212129" ≡ "9"
 _ = refl
 
-_ : (Solution.part₂ sol "123123") ≡ "12"
+_ : Solution.part₂ sol "123123" ≡ "12"
 _ = refl
