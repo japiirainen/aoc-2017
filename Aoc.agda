@@ -10,9 +10,10 @@ open import Data.List.Base
 open import Data.String.Properties using (_≟_)
 open import Data.String as String using (String; words)
 open import Data.Nat.Base as ℕ using (ℕ)
+open import Data.Nat.Show as ℕ using ()
 open import Data.Char.Base using (isSpace)
 open import Data.Integer.Base as ℤ using (ℤ; ∣_∣; +_; -_; 1ℤ; 0ℤ)
-open import Data.Maybe using (Maybe; just; nothing)
+open import Data.Maybe as Maybe using (Maybe; just; nothing)
 open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Vec.Base as V using (Vec)
@@ -23,6 +24,18 @@ record Show (a : Set) : Set where
     show : a → String
 
 open Show ⦃...⦄ public
+
+readℤ : String → Maybe ℤ
+readℤ s with String.toList s
+... | '-' ∷ rest = Maybe.map (ℤ.-_ ∘ ℤ.+_) (ℕ.readMaybe 10 (String.fromList rest))
+... | '+' ∷ rest = Maybe.map ℤ.+_ (ℕ.readMaybe 10 (String.fromList rest))
+... | _ = Maybe.map ℤ.+_ (ℕ.readMaybe 10 s)
+
+_ : readℤ "+10" ≡ just (ℤ.+ 10)
+_ = refl
+
+_ : readℤ "-10" ≡ just (ℤ.- (ℤ.+ 10))
+_ = refl
 
 instance
   Show-ℕ : Show ℕ
@@ -38,6 +51,9 @@ instance
 
   Show-List : {a : Set} → ⦃ Show a ⦄ → Show (List a)
   Show-List = show:= (String.unwords ∘ intersperse " , " ∘ map show)
+
+  Show-Vec : {n : ℕ} → {a : Set} → ⦃ Show a ⦄ → Show (Vec a n)
+  Show-Vec = show:= (show ∘ V.toList)
 
   Show-× : {a b : Set} → ⦃ Show a ⦄ → ⦃ Show b ⦄ → Show (a × b)
   Show-× = show:= λ { (a , b) → "( " String.++ show a String.++ ") , " String.++ show b }
@@ -110,5 +126,18 @@ module ListUtils where
 
   _‼_ : {A : Set} → List A → ℕ → Maybe A
   _‼_ = (head ∘ proj₂) ∘₂ flip splitAt
+
+  _ℤ-‼_ : {A : Set} → List A → ℤ → Maybe A
+  [] ℤ-‼ _ = nothing
+  _ ℤ-‼ ℤ.negsuc n = nothing
+  (x ∷ xs) ℤ-‼ ℤ.+_ ℕ.zero = just x
+  (_ ∷ xs) ℤ-‼ ℤ.+_ (ℕ.suc n) = xs ℤ-‼ (ℤ.+ n)
+
+  _ℤ[_]%=_ : {A : Set} → List A → ℤ → (A → A) → List A
+  [] ℤ[ _ ]%= _ = []
+  (x ∷ xs) ℤ[ ℤ.+_ ℕ.zero ]%= f = f x ∷ xs
+  (x ∷ xs) ℤ[ ℤ.+_ (ℕ.suc n) ]%= f = x ∷ (xs ℤ[ (ℤ.+ n) ]%= f)
+  (x ∷ xs) ℤ[ ℤ.negsuc n ]%= f = x ∷ xs
+
 
 open ListUtils public

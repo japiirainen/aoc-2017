@@ -10,6 +10,7 @@ import Day01
 import Day02
 import Day03
 import Day04
+import Day05
 
 open import Function using (_$_; _∘_)
 open import Data.List.Base using (List; map; zip; upTo; length)
@@ -24,6 +25,7 @@ ss = Day01.sol ∷
      Day02.sol ∷
      Day03.sol ∷
      Day04.sol ∷
+     Day05.sol ∷
      []
 
 ⇒Solutions : (List Aoc.Solution) → Solutions
