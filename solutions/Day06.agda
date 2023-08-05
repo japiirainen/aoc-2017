@@ -17,7 +17,7 @@ open import Effect.Monad using (RawMonad)
 open import Level renaming (suc to lsuc) 
 open import Data.String as String using (String; wordsByᵇ)
 open import Data.Char as Char using (isSpace)
-open import Data.List using (List; _∷_; []; [_]; length; zip; upTo; map; dropWhileᵇ; foldl)
+open import Data.List using (List; _∷_; []; [_]; length; zip; map; dropWhileᵇ; foldl)
 open import Data.Bool using (if_then_else_)
 open import Data.Nat using (ℕ; _∸_; _/_; _%_; _*_; _+_; _≡ᵇ_; suc; zero; _<ᵇ_)
 open import Data.Nat.Show using (readMaybe)
@@ -42,7 +42,7 @@ module Step where
   step xs = accum (map (λ (x , j) → if i ≡ᵇ j then 0 else x) indexed) ss
     where
     n = length xs
-    indexed = zip xs (upTo n)
+    indexed = zip xs (∙∙∙ n)
     max,i = argmax proj₁ (0 , 0) indexed
     max = proj₁ max,i
     i = proj₂ max,i
@@ -78,10 +78,10 @@ module Loop {a ℓ₁ ℓ₂} (sto : StrictTotalOrder a ℓ₁ ℓ₂) where
   find-loop = go empty big
     where
     go : Map ℕ → ℕ → Stream Key ∞ → ℕ × ℕ
-    go seen zero _ = 69 , 69
-    go seen (suc r) (x Stream.∷ xs) with lookup seen x
-    ... | nothing = let n = size seen in go (insert x n seen) r (Thunk.force xs)
-    ... | (just i) = let n = size seen in n , n ∸ i
+    go seen zero _ = 0 , 0
+    go seen (suc r) (x Stream.∷ xs) with lookup seen x | size seen
+    ... | nothing  | n = go (insert x n seen) r (Thunk.force xs)
+    ... | (just i) | n = n , n ∸ i
 
 module Solve where
 

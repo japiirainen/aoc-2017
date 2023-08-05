@@ -148,5 +148,8 @@ module ListUtils where
   _∙∙∙_ : ℕ → ℕ → List ℕ
   lo ∙∙∙ hi = dropWhileᵇ (λ n → n <ᵇ lo) $ upTo (hi + 1)
 
+  ∙∙∙_ : ℕ → List ℕ
+  ∙∙∙ hi = 0 ∙∙∙ hi
+
 
 open ListUtils public
