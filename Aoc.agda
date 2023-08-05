@@ -9,7 +9,7 @@ open import Function
 open import Data.List.Base
 open import Data.String.Properties using (_≟_)
 open import Data.String as String using (String; words)
-open import Data.Nat.Base as ℕ using (ℕ)
+open import Data.Nat.Base as ℕ using (ℕ; _<ᵇ_; _+_)
 open import Data.Nat.Show as ℕ using ()
 open import Data.Char.Base using (isSpace)
 open import Data.Integer.Base as ℤ using (ℤ; ∣_∣; +_; -_; 1ℤ; 0ℤ)
@@ -138,6 +138,15 @@ module ListUtils where
   (x ∷ xs) ℤ[ ℤ.+_ ℕ.zero ]%= f = f x ∷ xs
   (x ∷ xs) ℤ[ ℤ.+_ (ℕ.suc n) ]%= f = x ∷ (xs ℤ[ (ℤ.+ n) ]%= f)
   (x ∷ xs) ℤ[ ℤ.negsuc n ]%= f = x ∷ xs
+
+  _ℕ[_]%=_ : {A : Set} (xs : List A) → ℕ → (A → A) → List A
+  [] ℕ[ ℕ.zero ]%= f = []
+  [] ℕ[ ℕ.suc n ]%= f = []
+  (x ∷ xs) ℕ[ ℕ.zero ]%= f = f x ∷ xs
+  (x ∷ xs) ℕ[ ℕ.suc n ]%= f =  x ∷ (xs ℕ[ n ]%= f)
+
+  _∙∙∙_ : ℕ → ℕ → List ℕ
+  lo ∙∙∙ hi = dropWhileᵇ (λ n → n <ᵇ lo) $ upTo (hi + 1)
 
 
 open ListUtils public
