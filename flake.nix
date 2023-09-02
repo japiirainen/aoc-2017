@@ -25,7 +25,26 @@
           sha256 = "sha256-ovnhL5otoaACpqHZnk/ucivwtEfBQtGRu4/xw4+Ws+c=";
         };
       }));
-      agda = pkgs.agda.withPackages (ps: [ (agda-stdlib ps) ]);
+      komachi = p: (p.mkDerivation {
+        pname = "komachi";
+        meta.broken = false;
+        version = "1.0.0";
+        buildInputs = [ (agda-stdlib p) ];
+        buildPhase = ''
+          for file in ./src/Komachi/*
+          do
+            agda "$file"
+          done
+        '';
+        src = pkgs.fetchFromGitHub {
+          repo = "komachi";
+          owner = "Lysxia";
+          version = "1.0.0";
+          rev = "7d37f31cd15199a1cda2417d32ffbb95209430b0";
+          sha256 = "sha256-r31tEaYZPZQnCJBhRokpepEXRexASQ1n0S2Sss+YbRw=";
+        };
+      });
+      agda = pkgs.agda.withPackages (ps: [ (agda-stdlib ps) (komachi ps) ]);
     in
     {
       devShells.default = pkgs.mkShell {
